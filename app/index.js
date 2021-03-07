@@ -70,8 +70,6 @@ const topics = [
   },
 ];
 
-const Home = () => <h1>Home</h1>;
-
 const Resource = ({ match }) => {
   const topic = topics
     .find(({ id }) => id === match.params.topicId)
@@ -94,39 +92,32 @@ const Topic = ({ match }) => {
       <ul>
         {topic.resources.map((sub) => (
           <li key={sub.id}>
-            <Link to={`/topics/${match.params.topicId}/${sub.id}`}>
-              {sub.name}
-            </Link>
+            <Link to={`${match.url}/${sub.id}`}>{sub.name}</Link>
           </li>
         ))}
       </ul>
       <hr />
-      <Route path="/topics/:topicId/:subId" component={Resource} />
+      <Route path={`${match.path}/:subId`} component={Resource} />
     </div>
   );
 };
 
-const Topics = () => (
+const Topics = ({ match }) => (
   <div>
     <h1>Topics</h1>
     <ul>
       {topics.map(({ name, id }) => (
         <li key={id}>
-          <Link to={`/topics/${id}`}>{name}</Link>
+          <Link to={`${match.url}/${id}`}>{name}</Link>
         </li>
       ))}
     </ul>
     <hr />
-    <Route path="/topics/:topicId" component={Topic} />
+    <Route path={`${match.path}/:topicId`} component={Topic} />
   </div>
 );
 
-const About = () =>
-  topics.map(({ description, id }) => (
-    <ul>
-      <li key={id}>{description}</li>
-    </ul>
-  ));
+const Home = () => <h1>Home</h1>;
 
 function App() {
   return (

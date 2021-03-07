@@ -1,32 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Switch,
-  Redirect,
-  useLocation,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-// You can use the last <Route> in a <Switch> as a kind of
-// "fallback" route, to catch 404 errors.
-//
-// There are a few useful things to note about this example:
-//
-// - A <Switch> renders the first child <Route> that matches
-// - A <Redirect> may be used to redirect old URLs to new ones
-// - A <Route path="*> always matches
+const About = () => <h2>About</h2>;
 
-const Home = () => <h1>Home</h1>;
+const Company = () => <h2>Company</h2>;
 
-const WillMatch = () => <h1>Matched!</h1>;
-
-const NoMatch = ({ location }) => (
+const User = ({ match }) => (
   <div>
-    <h3>
-      No match for <code>{location.pathname}</code>
-    </h3>
+    <h2>User: {match.params.user}</h2>
   </div>
 );
 
@@ -36,26 +18,23 @@ function App() {
       <div>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <Link to="/old-match">Old Match, to be redirected</Link>
+            <Link to="/company">Company</Link>
           </li>
           <li>
-            <Link to="/will-match">Will Match</Link>
+            <Link to="/kim">Kim</Link>
           </li>
           <li>
-            <Link to="/will-not-match">Will Not Match</Link>
-          </li>
-          <li>
-            <Link to="/also/will/not/match">Also will not match</Link>
+            <Link to="/chris">Chris</Link>
           </li>
         </ul>
+
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Redirect from="/old-match" to="/will-match" />
-          <Route path="/will-match" component={WillMatch} />
-          <Route component={NoMatch} />
+          <Route path="/about" component={About} />
+          <Route path="/company" component={Company} />
+          <Route path="/:user" component={User} />
         </Switch>
       </div>
     </Router>
@@ -65,24 +44,17 @@ function App() {
 ReactDOM.render(<App />, document.getElementById('app'));
 
 /**
-    <Route component={NoMatch} />
+ *    <Route path='/:user' component={User }/>   
+ This is a dynamic route meaning we can swap out the different users & each time the user changes we will still just render the user component 
+ & match.params.user will be whatever that user's id is.
 
-This route doesn't have a path, so it's always gonna match. 
-So no matter, if we go to "/" or "/will-match", we are always gonna get rendered two components as this will always match since this doesn't have a path .
-So to fix this, we use React Router Switch component which will only render the very first route that matches.    
-We will put all of these in a switch component. 
-
-  <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/will-match" component={WillMatch} />
-          <Route component={NoMatch} />
-  </Switch>
-
-*/
-
-/**
-    <Redirect from="/old-match" to="/will-match" />
- When React Router sees that we are trying to get to the old-match path, then it's gonna redirect us from that old-match path to will-match which will then render
- WillMatch component because "/will-match" route will match.
+ * The problem with this (<Route path='/:user' component={User }/>) is that with routes, routes can match in more than one place.
+  So if we come to "/about", not only is this route gonna render the about page, but also our route here (<Route path='/:user' component={User}/>) is gonna match
+   as React Router assumes that About is just a user because this pattern ('/about') is same as this pattern ('/:user')
  
- */
+   If we render our app, if we go to "/about", About route or component will be rendered but also our user component.
+   The reason for is when we go to "/about", this path ":user" is also gonna match whic then gives us the user component.
+
+   So we use Switch component. It will render the first path that matches and nothin else after that.
+ 
+   */
